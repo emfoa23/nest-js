@@ -28,8 +28,8 @@ export class TodoService {
     this.todoList = [];
   }
 
-  readOne(id: string): Todo {
-    const todo: Todo = this.todoList.find((item: Todo) => item.id === +id);
+  readOne(id: number): Todo {
+    const todo: Todo = this.todoList.find((item: Todo) => item.id === id);
 
     if (!todo) {
       throw new NotFoundException(`id가 ${id}인 todo가 존재하지 않습니다.`);
@@ -38,21 +38,22 @@ export class TodoService {
     return todo;
   }
 
-  updateOne(id: string, data: UpdateTodoDto): Todo {
+  updateOne(id: number, data: UpdateTodoDto): Todo {
+    this.readOne(id);
     const todo: Todo = {
       ...this.todoList[id],
       ...data,
     };
 
     this.todoList = this.todoList.map((item: Todo) =>
-      item.id === +id ? todo : item,
+      item.id === id ? todo : item,
     );
 
     return todo;
   }
 
-  deleteOne(id: string): void {
+  deleteOne(id: number): void {
     this.readOne(id);
-    this.todoList = this.todoList.filter((item: Todo) => item.id !== +id);
+    this.todoList = this.todoList.filter((item: Todo) => item.id !== id);
   }
 }

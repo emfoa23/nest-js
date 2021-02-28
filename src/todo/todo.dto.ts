@@ -1,5 +1,5 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class CreateTodoDto {
   @IsString()
@@ -8,8 +8,9 @@ export class CreateTodoDto {
   @IsString()
   readonly message: string;
 
-  @IsString()
-  readonly assignees: string[];
+  @IsString({ each: true })
+  @IsOptional()
+  readonly assignees?: string[];
 }
 
 export class UpdateTodoDto extends PartialType(CreateTodoDto) {}

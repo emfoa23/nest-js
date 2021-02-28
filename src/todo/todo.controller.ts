@@ -31,17 +31,17 @@ export class TodoController {
   }
 
   @Get(':id')
-  getOne(@Param('id') id: string): Todo {
+  getOne(@Param('id') id: number): Todo {
     return this.todoService.readOne(id);
   }
 
   @Patch(':id')
-  patchOne(@Param('id') id: string, @Body() data: UpdateTodoDto): Todo {
+  patchOne(@Param('id') id: number, @Body() data: UpdateTodoDto): Todo {
     return this.todoService.updateOne(id, data);
   }
 
   @Delete(':id')
-  deleteOne(@Param('id') id: string): void {
+  deleteOne(@Param('id') id: number): void {
     this.todoService.deleteOne(id);
   }
 }
