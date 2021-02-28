@@ -1,37 +1,46 @@
-import { Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { TodoService } from './todo.service';
+import { Todo } from './todo.entity';
 
 @Controller('todo')
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
   @Get()
-  getAll(): string {
-    return this.todoService.getAll();
+  getAll(): Todo[] {
+    return this.todoService.readAll();
   }
 
   @Post()
-  postOne(): string {
-    return this.todoService.postOne();
+  postOne(@Body() todoData): Todo {
+    return this.todoService.createOne(todoData);
   }
 
   @Delete()
-  deleteAll(): string {
-    return this.todoService.deleteAll();
+  deleteAll(): void {
+    this.todoService.deleteAll();
   }
 
   @Get(':id')
-  getOne(@Param('id') id: string): string {
-    return this.todoService.getOne(id);
+  getOne(@Param('id') id: string): Todo {
+    return this.todoService.readOne(id);
   }
 
   @Patch(':id')
-  patchOne(@Param('id') id: string): string {
-    return this.todoService.patchOne(id);
+  patchOne(@Param('id') id: string, @Body() todoData): Todo {
+    return this.todoService.updateOne(id, todoData);
   }
 
   @Delete(':id')
-  deleteOne(@Param('id') id: string): string {
-    return this.todoService.deleteOne(id);
+  deleteOne(@Param('id') id: string): void {
+    this.todoService.deleteOne(id);
   }
 }

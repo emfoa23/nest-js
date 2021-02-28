@@ -1,28 +1,57 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Todo } from './todo.entity';
 
 @Injectable()
 export class TodoService {
-  getAll(): string {
-    return 'todo 를 모두 조회해야함';
+  private todoList: Todo[] = [];
+
+  readAll(): Todo[] {
+    return this.todoList;
   }
 
-  postOne(): string {
-    return 'todo 하나를 추가해야함';
+  createOne(data): Todo {
+    const lastIndex: number = this.todoList.length - 1;
+    const id: number = lastIndex !== -1 ? this.todoList[lastIndex].id + 1 : 0;
+
+    const todo = {
+      id,
+      ...data,
+    };
+
+    this.todoList = [...this.todoList, todo];
+
+    return todo;
   }
 
-  deleteAll(): string {
-    return 'todo 를 모두 지워야함';
+  deleteAll(): void {
+    this.todoList = [];
   }
 
-  getOne(id: string): string {
-    return `${id} 번 todo 를 조회해야함`;
+  readOne(id: string): Todo {
+    const todo: Todo = this.todoList.find((item: Todo) => item.id === +id);
+
+    if (!todo) {
+      throw new NotFoundException(`id가 ${id}인 todo가 존재하지 않습니다.`);
+    }
+
+    return todo;
   }
 
-  patchOne(id: string): string {
-    return `${id} 번 todo 를 수정해야함`;
+  updateOne(id: string, data): Todo {
+    const todo: Todo = {
+      ...this.todoList[id],
+      ...data,
+    };
+
+    this.todoList = this.todoList.map((item: Todo) =>
+      item.id === +id ? todo : item,
+    );
+
+    return todo;
   }
 
-  deleteOne(id: string): string {
-    return `${id} 번 todo 를 삭제해야함`;
+  deleteOne(id: string): void {
+    this.readOne(id);
+    this.todoList = this.todoList.filter((item: Todo) => item.id !== +id);
   }
 }
